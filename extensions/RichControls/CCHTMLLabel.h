@@ -53,8 +53,8 @@ public:
 			{
 				CCLuaStack* stack = CCLuaEngine::defaultEngine()->getLuaStack();
 				stack->pushInt(_id);
-				stack->pushString(touchable->getName().c_str(), touchable->getName().size());
-				stack->pushString(touchable->getValue().c_str(), touchable->getValue().size());
+				stack->pushString(touchable->getName().c_str(), (int)touchable->getName().size());
+				stack->pushString(touchable->getValue().c_str(), (int)touchable->getValue().size());
 				stack->executeFunctionByHandler(m_clickhandle, 3);
 			}
 		}
@@ -117,8 +117,9 @@ class CCHTMLLabel : public CCNode, public CCLabelProtocol
 {
 public:
 	static CCHTMLLabel* create();
-	static CCHTMLLabel* createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias = DFONT_DEFAULT_FONTALIAS);
-	bool initWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias = DFONT_DEFAULT_FONTALIAS);
+	static CCHTMLLabel* createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias = DFONT_DEFAULT_FONTALIAS,EAlignment hAlignment=e_align_left,EAlignment vAlignment=e_align_bottom);
+	static CCHTMLLabel* createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,CCTextAlignment hAlignment,CCVerticalTextAlignment vAlignment);
+	bool initWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias = DFONT_DEFAULT_FONTALIAS,EAlignment hAlignment=e_align_left,EAlignment vAlignment=e_align_bottom);
 
 	// from CCLabelProtocol
 	virtual void setString(const char *utf8_str);
@@ -173,7 +174,9 @@ public:
 	CCNODE_UTILITY_SETTER(setPlainMode,				bool);
 	CCNODE_UTILITY_SETTER(setDefaultFontAlias,		const char*);
 	CCNODE_UTILITY_SETTER(setDefaultColor,			unsigned int);
-	CCNODE_UTILITY_SETTER(setDefaultAlignment,		EAlignment);
+	virtual void setAlignment(EAlignment h,EAlignment v){m_rRichNode->setAlignment(h,v);};
+	CCNODE_UTILITY_SETTER(setHorizontalAligment,	EAlignment);
+	CCNODE_UTILITY_SETTER(setVerticalAligment,		EAlignment);
 	CCNODE_UTILITY_SETTER(setDefaultWrapline,		bool);
 	CCNODE_UTILITY_SETTER(setDefaultSpacing,		short);
 	CCNODE_UTILITY_SETTER(setDefaultPadding,		short);
@@ -182,7 +185,8 @@ public:
 	CCNODE_UTILITY_GETTER(isPlainMode,				bool);
 	CCNODE_UTILITY_GETTER(getDefaultFontAlias,		const char*);
 	CCNODE_UTILITY_GETTER(getDefaultColor,			unsigned int);
-	CCNODE_UTILITY_GETTER(getDefaultAlignment,		EAlignment);
+	CCNODE_UTILITY_GETTER(getHorizontalAligment,	EAlignment);
+	CCNODE_UTILITY_GETTER(getVerticalAligment,		EAlignment);
 	CCNODE_UTILITY_GETTER(isDefaultWrapline,		bool);
 	CCNODE_UTILITY_GETTER(getDefaultSpacing,		short);
 	CCNODE_UTILITY_GETTER(getDefaultPadding,		short);

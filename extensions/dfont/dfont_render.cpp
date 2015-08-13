@@ -1,5 +1,6 @@
 /****************************************************************************
  Copyright (c) 2013 Kevin Sun and RenRen Games
+ Copyright (c) 2015 Richard and YouJie Games
 
  email:happykevins@gmail.com
  http://wan.renren.com
@@ -23,6 +24,14 @@
  THE SOFTWARE.
  ****************************************************************************/
 #include "dfont_render.h"
+#include "cocos2d.h"
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    #include <tr1/unordered_map>
+    using namespace std::tr1;
+#else
+#include <unordered_map>
+    using namespace std;
+#endif
 
 namespace dfont
 {
@@ -520,6 +529,13 @@ FT_Error GlyphRenderer::render(FT_Glyph& glyph, IBitmap** pbuf, FT_Vector* top_l
 
 	return error;
 }
+typedef struct _DataRef
+{
+    unsigned char*	data;
+	unsigned long	size;
+    unsigned int referenceCount;
+}DataRef;
+static unordered_map<std::string, DataRef> s_cacheFontData;
 
 FontInfo* FontInfo::create_font(FT_Library library, const char* fontname, FT_UInt width_pt, FT_UInt height_pt, FT_UInt ppi/*=72*/)
 {
@@ -530,10 +546,12 @@ FontInfo* FontInfo::create_font(FT_Library library, const char* fontname, FT_Lon
 	if ( library && fontname)
 	{
 		FontInfo* f = new FontInfo(library);
-		if ( 0 == f->init(library, fontname, face_idx, width_pt, height_pt, ppi) )
+		FT_Error err = f->init(library, fontname, face_idx, width_pt, height_pt, ppi);
+		if ( 0 == err )
 		{
 			return f;
-		}
+		}else
+			CCLOG("FontInfo->create_font Error:%d",err);
 
 		delete f;
 		return false;
@@ -766,10 +784,24 @@ GlyphRenderer* FontInfo::renderer()
 FT_Error FontInfo::init(FT_Library& lib, const char* fontname, FT_Long face_idx, FT_UInt width_pt, FT_UInt height_pt, FT_UInt ppi)
 {
 	FT_Error error = 0;
-
 	m_fontname = fontname;
-	
-	error = FT_New_Face(lib, m_fontname.c_str(), face_idx, &m_face);
+
+    auto it = s_cacheFontData.find(m_fontname);
+    if (it != s_cacheFontData.end())
+    {
+        (*it).second.referenceCount += 1;
+    }
+    else
+    {
+		unsigned long size=0;
+		unsigned char* buffer = cocos2d::CCFileUtils::sharedFileUtils()->getFileData(fontname,"rb",&size);
+        s_cacheFontData[m_fontname].referenceCount = 1;
+        s_cacheFontData[m_fontname].data = buffer;
+		s_cacheFontData[m_fontname].size = size;
+    }
+   
+	//FT_New_Face(lib, m_fontname.c_str(), face_idx, &m_face); //fix of android path
+	error = FT_New_Memory_Face(lib, s_cacheFontData[m_fontname].data, s_cacheFontData[m_fontname].size, face_idx, &m_face );
 	if ( error ) return error;
 
 	m_has_kerning = FT_HAS_KERNING(m_face) != 0; 
@@ -871,6 +903,12 @@ FontInfo::~FontInfo()
 		FT_Done_Face(m_face);
 		m_face = NULL;
 	}
+    s_cacheFontData[m_fontname].referenceCount -= 1;
+    if (s_cacheFontData[m_fontname].referenceCount == 0)
+    {
+		CC_SAFE_DELETE(s_cacheFontData[m_fontname].data);
+        s_cacheFontData.erase(m_fontname);
+    }
 }
 
 	

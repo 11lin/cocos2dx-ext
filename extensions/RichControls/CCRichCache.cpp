@@ -31,7 +31,7 @@ NS_CC_EXT_BEGIN;
 
 RCacheBase::RCacheBase()
 	: m_rHAlign(e_align_left)
-	, m_rVAlign(e_align_bottom)
+	, m_rVAlign(e_align_top)
 	, m_rLineHeight(0)
 	, m_rSpacing(0)
 	, m_rPadding(0)
@@ -64,7 +64,7 @@ RRect RLineCache::flush(class IRichCompositor* compositor)
 
 	RPos pen;
 	RRect temp_linerect;
-	short base_line_pos_y = 0;
+//	short base_line_pos_y = 0;
 	element_list_t::iterator inner_start_it = line->begin();
 	line_marks.push_back(line->begin()); // push first line start
 	for ( element_list_t::iterator it = line->begin(); it != line->end(); it++ )
@@ -153,7 +153,7 @@ RRect RLineCache::flush(class IRichCompositor* compositor)
 			short lwidth = line_widths[line_mark_idx];
 
 			// x correct
-			switch ( getHAlign() )
+			switch ( (int)getHAlign() )
 			{
 			case e_align_left:
 				align_correct_x = getPadding();
@@ -241,8 +241,8 @@ RRect RHTMLTableCache::flush(class IRichCompositor* compositor)
 	std::vector<short> row_heights;
 	std::vector<short> col_widths;
 	std::vector<bool> width_set;
-	short max_row_width = 0;
-	short max_row_height = 0;
+//	short max_row_width = 0;
+//	short max_row_height = 0;
 	for ( element_list_t::iterator it = m_rCached.begin(); it != m_rCached.end(); it++ )
 	{
 		REleHTMLRow* row = dynamic_cast<REleHTMLRow*>(*it);
@@ -391,7 +391,7 @@ void RHTMLTableCache::recompositCell(class REleHTMLCell* cell)
 		cell->m_rVAlignment :
 		( cell->m_rRow->m_rVAlignSpecified ? cell->m_rRow->m_rVAlignment : m_rVAlign);
 
-	switch ( halign )
+	switch ( (int)halign )
 	{
 	case e_align_left:
 		x_fixed = 0 + padding;
@@ -404,7 +404,7 @@ void RHTMLTableCache::recompositCell(class REleHTMLCell* cell)
 		break;
 	}
 
-	switch ( valign )
+	switch ( (int)valign )
 	{
 	case e_align_top:
 		y_fixed = 0 - padding;

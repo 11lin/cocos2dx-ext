@@ -89,16 +89,39 @@ unsigned int CCRichNode::getDefaultColor()
 	return getCompositor()->getRenderState()->color;
 }
 
-EAlignment CCRichNode::getDefaultAlignment()
+void CCRichNode::setHorizontalAligment(EAlignment h)
+{
+	if ( getCompositor()->getRootCache()->getHAlign() != h)
+	{
+		getCompositor()->getRootCache()->setHAlign(h);
+		updateAll();
+	}
+}
+void CCRichNode::setVerticalAligment(EAlignment v)
+{
+	if (getCompositor()->getRootCache()->getVAlign() != v )
+	{
+		getCompositor()->getRootCache()->setVAlign(v);
+		updateAll();
+	}	
+}
+
+EAlignment CCRichNode::getHorizontalAligment()
 {
 	return getCompositor()->getRootCache()->getHAlign();
 }
 
-void CCRichNode::setDefaultAlignment(EAlignment align)
+EAlignment CCRichNode::getVerticalAligment()
 {
-	if ( getCompositor()->getRootCache()->getHAlign() != align )
+	return getCompositor()->getRootCache()->getVAlign();
+}
+
+void CCRichNode::setAlignment(EAlignment h,EAlignment v)
+{
+	if ( getCompositor()->getRootCache()->getHAlign() != h || getCompositor()->getRootCache()->getVAlign() != v )
 	{
-		getCompositor()->getRootCache()->setHAlign(align);
+		getCompositor()->getRootCache()->setHAlign(h);
+		getCompositor()->getRootCache()->setVAlign(v);
 		updateAll();
 	}
 }
@@ -147,8 +170,11 @@ void CCRichNode::setDefaultPadding(short padding)
 
 void CCRichNode::setStringUTF8(const char* utf8_str)
 {
-	m_rRichString = utf8_str;
-	updateAll();
+	if (m_rRichString.compare(utf8_str))
+	{
+		m_rRichString = utf8_str;
+		updateAll();
+	}
 }
 
 void CCRichNode::appendStringUTF8(const char* utf8_str)
@@ -189,8 +215,9 @@ CCRichOverlay* CCRichNode::getOverlay()
 		m_rOverlays = CCRichOverlay::create();
 		if (m_rOverlays)
 		{
+			m_rOverlays->setTouchEnabled(true);
 			m_rOverlays->retain();
-			m_rOverlays->registerWithTouchDispatcher();
+			//m_rOverlays->registerWithTouchDispatcher();
 			addChild(m_rOverlays);
 		}
 	}
@@ -364,10 +391,10 @@ CCRichNode::~CCRichNode()
 	clearAtlasMap();
 	clearRichElements();
 
-	if ( m_rOverlays )
-	{
-		CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(m_rOverlays);
-	}
+	//if ( m_rOverlays )
+	//{
+	//	CCDirector::sharedDirector()->getTouchDispatcher()->removeDelegate(m_rOverlays);
+	//}
 
 	CC_SAFE_RELEASE(m_rOverlays);
 	CC_SAFE_DELETE(m_rParser);

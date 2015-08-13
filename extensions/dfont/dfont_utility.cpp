@@ -44,13 +44,14 @@ using namespace cocos2d;
 
 namespace dfont 
 {
+	std::vector<std::string> systemPaths;
 
 const char* dfont_default_fontpath = NULL;
+const char* dfont_default_fontfilepath = NULL;
 const char* dfont_default_fontfile = NULL;
 int			dfont_default_ppi = 96;
-int			dfont_default_size = 18;
+int			dfont_default_size = 24;
 unsigned int dfont_default_color = 0xffffffff;
-
 //
 // platform utilities
 //
@@ -66,17 +67,18 @@ const char* get_systemfont_path()
 
 int get_system_default_ppi()
 {
-	return 0;
+	return dfont_default_ppi;
 }
 
 int get_prefered_default_fontsize()
 {
-	return 18;
+	return dfont_default_size;
 }
 
 const char* get_system_default_fontfile()
 {
-	return "simsun.ttc";
+	//return "simsun.ttc";
+	return "simhei.ttf";
 }
 
 const char* get_system_fallback_fontfile()
@@ -113,7 +115,7 @@ int get_prefered_default_fontsize()
 
 const char* get_system_default_fontfile()
 {
-	return "STHeiti Light.ttc";
+	return "STHeiti-Medium.ttc";
 }
 
 const char* get_system_fallback_fontfile()
@@ -246,24 +248,52 @@ int get_system_default_hacklatin_fontshifty()
 #endif
 
 //////////////////////////////////////////////////////////////////////////
+void addSystemFontPath(const std::string&pathName)
+{
+	systemPaths.push_back(pathName);
+}
+const char* getDefaultFilePath()
+{
+	return dfont_default_fontfilepath;
+}
 //
 // dfont system default initializer
 //
-void dfont_default_initialize()
+bool dfont_default_initialize()
 {
+	std::string temStr="";
+	temStr=temStr+get_systemfont_path()+"/"+get_system_default_fontfile();
+	systemPaths.push_back(temStr);
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+	
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	addSystemFontPath("/System/Library/Fonts/STHeiti Medium.ttc");
+	addSystemFontPath("/System/Library/Fonts/Core/STHeiti-Medium.ttc");
+#elif (CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID)
+
+#endif
+	for(auto&i:systemPaths)
+	{
+		if (CCFileUtils::sharedFileUtils()->isFileExist(i))
+		{
+			dfont_default_fontfilepath=i.c_str();
+			break;
+		}
+	}
 	dfont_default_fontpath	= get_systemfont_path();
 	dfont_default_ppi		= get_system_default_ppi();
 	dfont_default_fontfile	= get_system_default_fontfile();
 	dfont_default_size		= get_prefered_default_fontsize();
-
-	CCAssert(dfont_default_fontpath, "");
-	CCAssert(dfont_default_fontfile, "");
-	CCFileUtils::sharedFileUtils()->addSearchPath(dfont_default_fontpath);
+	if (dfont_default_fontfilepath==NULL || dfont_default_fontfilepath=="")
+	{
+		return false;
+	}
+	//CCFileUtils::sharedFileUtils()->addSearchPath(dfont_default_fontpath);
 
 	// add default font
 	FontCatalog* font_catalog = FontFactory::instance()->create_font(
 		DFONT_DEFAULT_FONTALIAS, 
-		dfont_default_fontfile, 
+		dfont_default_fontfilepath, 
 		dfont_default_color, 
 		dfont_default_size, 
 		e_plain);
@@ -292,6 +322,7 @@ void dfont_default_initialize()
 				get_system_default_hacklatin_fontshifty());
 		}
 	}
+	return true;
 }
 
 std::set<unsigned long>* latin_charset()

@@ -49,10 +49,10 @@ CCHTMLLabel* CCHTMLLabel::create()
 	return NULL;
 }
 
-CCHTMLLabel* CCHTMLLabel::createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias)
+CCHTMLLabel* CCHTMLLabel::createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,EAlignment hAlignment,EAlignment vAlignment)
 {
 	CCHTMLLabel* label = new CCHTMLLabel;
-	if ( label && label->initWithString(utf8_str, preferred_size, font_alias) )
+	if ( label && label->initWithString(utf8_str, preferred_size, font_alias,hAlignment,vAlignment) )
 	{
 		label->autorelease();
 		return label;
@@ -62,11 +62,13 @@ CCHTMLLabel* CCHTMLLabel::createWithString(const char* utf8_str, const CCSize& p
 
 	return NULL;
 }
-
-bool CCHTMLLabel::initWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias)
+CCHTMLLabel* CCHTMLLabel::createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,CCTextAlignment hAlignment,CCVerticalTextAlignment vAlignment)
+{
+	return createWithString(utf8_str, preferred_size, font_alias,(EAlignment)hAlignment,(EAlignment)vAlignment);
+}
+bool CCHTMLLabel::initWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,EAlignment hAlignment,EAlignment vAlignment)
 {
 	CCAssert(m_rRichNode == NULL, "");
-
 	m_rRichNode = CCHTMLNode::createWithContainer(this);
 	if( m_rRichNode == NULL )
 		return false;
@@ -80,7 +82,7 @@ bool CCHTMLLabel::initWithString(const char* utf8_str, const CCSize& preferred_s
 	m_rRichNode->setDefaultWrapline(true);
 	m_rRichNode->setDefaultSpacing(1);
 	m_rRichNode->setDefaultPadding(0);
-	m_rRichNode->setDefaultAlignment(e_align_left);
+	m_rRichNode->setAlignment(hAlignment,vAlignment);
 	m_rRichNode->setDefaultFontAlias(font_alias);
 	m_rRichNode->setPreferredSize(RSize((short)preferred_size.width, (short)preferred_size.height));
 

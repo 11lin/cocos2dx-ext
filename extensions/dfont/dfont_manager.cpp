@@ -67,7 +67,7 @@ WTexture2D::WTexture2D(FontInfo* f, int width, int height, int padding_width, in
 
 	for ( size_t i = 0; i < m_slot_num; i++ )
 	{
-		_init_slot(i);
+		_init_slot((int)i);
 	}
 
 #if _DFONT_DEBUG
@@ -174,12 +174,12 @@ GlyphSlot* WTexture2D::cache_charcode(utf32 charcode)
 		if ( m_font->render_charcode(charcode, &bm) )
 		{
 			slot->charcode = charcode;
-			slot->metrics.left = bm.top_left_pixels.x;
-			slot->metrics.top = bm.top_left_pixels.y;
+			slot->metrics.left = (int)bm.top_left_pixels.x;
+			slot->metrics.top = (int)bm.top_left_pixels.y;
 			slot->metrics.width = bm.bitmap->width();
 			slot->metrics.height = bm.bitmap->height();
-			slot->metrics.advance_x = bm.advance_pixels.x;
-			slot->metrics.advance_y = bm.advance_pixels.y;
+			slot->metrics.advance_x = (int)bm.advance_pixels.x;
+			slot->metrics.advance_y = (int)bm.advance_pixels.y;
 			slot->bitmap = bm.bitmap;
 			slot->padding_rect.width = bm.bitmap->real_width();
 			slot->padding_rect.height = bm.bitmap->real_height();
@@ -460,7 +460,7 @@ void FontCatalog::dump_textures(const char* prefix)
 {
 	for ( size_t i = 0; i < m_textures.size(); i++ )
 	{
-		m_textures[i]->dump_textures(prefix, i);
+		m_textures[i]->dump_textures(prefix, (int)i);
 	}
 }
 
@@ -552,9 +552,17 @@ FontCatalog* FontFactory::create_font(
 		// the alias is already in used, return it.
 		return catalog;
 	}
-
+	if(!strcmp(font_name,"default")) 
+	{
+		font_name=dfont::getDefaultFilePath();
+	}
 	std::string fullpath = CCFileUtils::sharedFileUtils()->fullPathForFilename(font_name);
-
+#if CC_TARGET_PLATFORM == CC_PLATFORM_IOS
+    if(CCFileUtils::sharedFileUtils()->isFileExist(fullpath)==false)
+    {
+        fullpath = dfont::getDefaultFilePath();
+    }
+#endif
 	font = FontInfo::create_font(s_ft_library, fullpath.c_str(), faceidx, size_pt, size_pt, ppi);
 	if ( !font )
 	{
@@ -588,7 +596,6 @@ FontCatalog* FontFactory::create_font(
 
 	return catalog;
 }
-
 void FontFactory::dump_textures()
 {
 	std::map<std::string, FontCatalog*>::iterator it = m_fonts.begin();
@@ -620,7 +627,7 @@ FontFactory* FontFactory::instance()
 		}
 		else
 		{
-			dfont_default_initialize();
+			//dfont_default_initialize();
 		}
 	}
 	return _factory;

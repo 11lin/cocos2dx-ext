@@ -42,9 +42,12 @@ CCRichOverlay* CCRichOverlay::create()
 
 bool CCRichOverlay::init()
 {
-	//CCLayer::init();
-	this->setTouchMode(kCCTouchesOneByOne);
-	return true;
+	if(CCLayer::init())
+	{
+			this->setTouchMode(kCCTouchesOneByOne);
+			return true;
+	}
+	return false;
 }
 
 void CCRichOverlay::draw()
@@ -125,7 +128,7 @@ void CCRichOverlay::ccTouchMoved(CCTouch *pTouch, CCEvent *pEvent)
 {
 	if ( m_touched && !m_eventhandlers.empty() )
 	{
-		CCPoint pt = convertToNodeSpace(pTouch->getLocation());
+//		CCPoint pt = convertToNodeSpace(pTouch->getLocation());
 		//CCLog("[Rich Touch Moved] at: %.0f, %.0f", pt.x, pt.y);
 
 		std::map<void*, IRichEventHandler*>::iterator hit = m_eventhandlers.begin();
@@ -166,7 +169,7 @@ void CCRichOverlay::ccTouchCancelled(CCTouch *pTouch, CCEvent *pEvent)
 {
 	if ( m_touched )
 	{
-		CCPoint pt = convertToNodeSpace(pTouch->getLocation());
+//		CCPoint pt = convertToNodeSpace(pTouch->getLocation());
 		//CCLog("[Rich Touch Cancelled] at: %.0f, %.0f", pt.x, pt.y);
 		//m_touched->onTouchCancelled(this, pTouch, pEvent);
 		m_touched = NULL;
@@ -182,8 +185,8 @@ void CCRichOverlay::registerListener(void* target, IRichEventHandler* listener)
 
 void CCRichOverlay::removeListener(void* target)
 {
-	std::map<void*, IRichEventHandler*>::iterator it = m_eventhandlers.find(target);
-
+//	std::map<void*, IRichEventHandler*>::iterator it = m_eventhandlers.find(target);
+    auto it =m_eventhandlers.find(target);
 	if ( it != m_eventhandlers.end() )
 	{
 		delete it->second;

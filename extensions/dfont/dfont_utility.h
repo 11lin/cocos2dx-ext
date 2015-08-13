@@ -26,28 +26,28 @@
 #define __DFONT_UTILITY_H__
 
 #include "dfont_config.h"
-
+#include <vector>
 #include <set>
+#include <string>
 
 namespace dfont
 {
 	// get system font directory
 	extern const char* get_systemfont_path();
-
+	extern void addSystemFontPath(const std::string&pathName);
 	// get system default ppi
 	extern int get_system_default_ppi();
-
+	extern const char* getDefaultFilePath();
 	// get system default font size
 	extern int get_prefered_default_fontsize();
 
 	// get system_default font
 	extern const char* get_system_default_fontfile();
-
 	// get system default latin font
 	extern const char* get_system_default_hacklatin_fontfile();
 
 	// default initializer for dfont
-	extern void dfont_default_initialize();
+	extern bool dfont_default_initialize();
 
 	// latin charactor set
 	extern std::set<unsigned long>* latin_charset();

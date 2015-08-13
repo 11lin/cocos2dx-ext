@@ -228,7 +228,7 @@ void REleBase::render(RRichCanvas canvas)
 		ccp(left,bottom),ccp(right,bottom),
 		ccp(right,top),ccp(left,top),
 	};
-	ccDrawColor4B(0xff, 0xff, 0x00, 0xff);
+	ccDrawColor4B(0x00, 0x00, 0xff, 0xff);
 	ccDrawPoly(vertices, 4, true);
 #endif
 }
@@ -1003,7 +1003,7 @@ REleHTMLU::REleHTMLU()
 
 bool REleHTMLHR::onParseAttributes(class IRichParser* parser, attrs_t* attrs )
 {
-	unsigned int color = 0;
+//	unsigned int color = 0;
 
 	m_rSize = REleHTMLNode::parsePixel((*attrs)["size"]);
 	m_rWidth = REleHTMLNode::parseOptSize( (*attrs)["width"] );
@@ -1179,10 +1179,10 @@ void REleHTMLCell::onRenderPrev(RRichCanvas canvas)
 	{
 		RRect rect = m_rMetrics.rect;
 		RPos gp = getGlobalPosition();
-		short left = gp.x;
-		short top = gp.y;
-		short right = left + rect.size.w;
-		short bottom = top - rect.size.h - 1;
+//		short left = gp.x;
+//		short top = gp.y;
+//		short right = left + rect.size.w;
+//		short bottom = top - rect.size.h - 1;
 
 		if (m_rDirty && m_rColor)
 		{
@@ -1610,10 +1610,10 @@ void REleHTMLTable::onRenderPrev(RRichCanvas canvas)
 			short rtop = top + pen_y + spacing;
 			short rbottom = rtop - spacing;
 
-			CCPoint vertices[4] = {
-				ccp(rleft,rbottom),ccp(rright,rbottom),
-				ccp(rright,rtop),ccp(rleft,rtop)
-			};
+//			CCPoint vertices[4] = {
+//				ccp(rleft,rbottom),ccp(rright,rbottom),
+//				ccp(rright,rtop),ccp(rleft,rtop)
+//			};
 
 			//drawThicknessLine(rleft, rtop, rright, rbottom, color4f);
 			createTicknessLineNode(canvas, rleft, rtop, rright, rbottom, color4f);
@@ -1633,10 +1633,10 @@ void REleHTMLTable::onRenderPrev(RRichCanvas canvas)
 			short ctop = top;
 			short cbottom = bottom;
 
-			CCPoint vertices[4] = {
-				ccp(cleft,cbottom),ccp(cright,cbottom),
-				ccp(cright,ctop),ccp(cleft,ctop)
-			};
+//			CCPoint vertices[4] = {
+//				ccp(cleft,cbottom),ccp(cright,cbottom),
+//				ccp(cright,ctop),ccp(cleft,ctop)
+//			};
 
 			//drawThicknessLine(cleft, ctop, cright, cbottom, color4f);
 			createTicknessLineNode(canvas, cleft, ctop, cright, cbottom, color4f);
@@ -1743,16 +1743,16 @@ bool REleHTMLTouchable::onTouchBegan(CCNode* container, CCTouch *touch, CCEvent 
 }
 void REleHTMLTouchable::onTouchMoved(CCNode* container, CCTouch *touch, CCEvent *evt)
 {
-	CCPoint pt = container->convertToNodeSpace(touch->getLocation());
+	container->convertToNodeSpace(touch->getLocation());
 	
 }
 void REleHTMLTouchable::onTouchEnded(CCNode* container, CCTouch *touch, CCEvent *evt)
 {
-	CCPoint pt = container->convertToNodeSpace(touch->getLocation());
+	container->convertToNodeSpace(touch->getLocation());
 }
 void REleHTMLTouchable::onTouchCancelled(CCNode* container, CCTouch *touch, CCEvent *evt)
 {
-	CCPoint pt = container->convertToNodeSpace(touch->getLocation());
+	container->convertToNodeSpace(touch->getLocation());
 	
 }
 
@@ -1828,7 +1828,7 @@ void REleCCBNode::registerCCBReader(ccb_reader_t reader)
 
 bool REleCCBNode::onParseAttributes(class IRichParser* parser, attrs_t* attrs )
 {
-	unsigned int color = 0;
+//	unsigned int color = 0;
 
 	m_filename = (*attrs)["src"];
 	
@@ -1862,7 +1862,7 @@ bool REleCCBNode::onParseAttributes(class IRichParser* parser, attrs_t* attrs )
 			{
 				m_sequence = (*attrs)["anim"];
 				if ( !m_sequence.empty() )
-					anim_manager->runAnimations(m_sequence.c_str());
+					anim_manager->runAnimationsForSequenceNamed(m_sequence.c_str());
 			}
 
 			return true;

@@ -199,9 +199,7 @@ public:
 	FontCatalog* create_font(
 		const char* alias, const char* font_name, unsigned int color, int size_pt,
 		EFontStyle style=e_plain, float strength=1.0f, unsigned int secondary_color=0xff000000, 
-		int faceidx=0, int ppi=DFONT_DEFAULT_FONTPPI
-		);
-
+		int faceidx=0, int ppi=DFONT_DEFAULT_FONTPPI);
 	FontCatalog* another_alias(const char* another_alias, const char* origin_alias);
 
 	void dump_textures();
@@ -212,7 +210,6 @@ private:
 
 	std::map<std::string, FontCatalog*> m_fonts;
 };
-
 }
 
 #endif//__DFONT_MANAGER_H__

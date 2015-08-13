@@ -213,14 +213,14 @@ enum EAlignment
 {
 	// Horizon
 	e_align_left = 0,
-	e_align_right = 1,
-	e_align_center = 2,
+	e_align_center = 1,
+	e_align_right = 2,
 	e_align_justify,	// not supported!
 	e_align_char,		// not supported!
 	// Vertical
-	e_align_bottom = 0,
-	e_align_top = 1,
-	e_align_middle = 2,
+	e_align_top = 0,
+	e_align_middle = 1,
+	e_align_bottom = 2,
 	e_align_baseline // not supported
 };
 

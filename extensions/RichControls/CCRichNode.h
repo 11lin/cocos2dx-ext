@@ -75,8 +75,11 @@ public:
 	virtual const char* getDefaultFontAlias();
 	virtual void setDefaultColor(unsigned int color);
 	virtual unsigned int getDefaultColor();
-	virtual void setDefaultAlignment(EAlignment align);
-	virtual EAlignment getDefaultAlignment();
+	virtual void setAlignment(EAlignment h,EAlignment v);
+	virtual void setHorizontalAligment(EAlignment h);
+	virtual void setVerticalAligment(EAlignment v);
+	virtual EAlignment getHorizontalAligment();
+	virtual EAlignment getVerticalAligment();
 	virtual bool isDefaultWrapline();
 	virtual void setDefaultWrapline(bool wrapline);
 	virtual short getDefaultSpacing();

@@ -5,3 +5,7 @@ Extensions for Cocos2dx: Dynamic Font Management, HTML Widget, Powerful Asset Ma
 
   * CCHTMLLabel Sample:
 <img src="https://github.com/happykevins/cocos2dx-ext/blob/master/samples/Cpp/HTMLTest/Resources/htmltest.jpg?raw=true">
+
+fix bugs
+ios support 64bit
+android support

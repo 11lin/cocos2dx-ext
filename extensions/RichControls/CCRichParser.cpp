@@ -68,7 +68,7 @@ element_list_t* RSimpleHTMLParser::parseString(const char* utf8_str)
 	{
 		eles = new element_list_t;
 		m_rCurrentElement = new REleHTMLRoot;
-		this->textHandler(this, utf8_str, strlen(utf8_str));
+		this->textHandler(this, utf8_str, (int)strlen(utf8_str));
 
 		eles->push_back(m_rCurrentElement);
 		m_rCurrentElement = NULL;
@@ -92,7 +92,7 @@ element_list_t* RSimpleHTMLParser::parseHTMLString(const char* utf8_str)
 	m_rElements = elelist;
 	m_rCurrentElement = NULL;
 
-	if ( !parser.parse(utf8_str, strlen(utf8_str)) || elelist->empty() )
+	if ( !parser.parse(utf8_str, (int)strlen(utf8_str)) || elelist->empty() )
 	{
 		CC_SAFE_DELETE(elelist);
 	}
@@ -384,7 +384,7 @@ int cc_transfer_angle_brackets_content(unsigned short* start, unsigned short* en
 
 bool cc_parse_rect(std::string& str, RRect& rect)
 {
-	int pos = 0;
+	size_t pos = 0;
 	// left
 	pos = str.find_first_of(',');
 	if ( pos == std::string::npos )
