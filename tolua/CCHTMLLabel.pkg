@@ -1,0 +1,62 @@
+$#include "renren-ext.h"
+//
+// Alignment
+// 
+enum EAlignment
+{
+    // Horizon
+    e_align_left = 0,
+    e_align_right = 1,
+    e_align_center = 2,
+    e_align_justify,    // not supported!
+    e_align_char,       // not supported!
+    // Vertical
+    e_align_bottom = 0,
+    e_align_top = 1,
+    e_align_middle = 2,
+    e_align_baseline // not supported
+};
+class CCHTMLLabel: public CCNode, public CCLabelProtocol
+{
+public:
+    static CCHTMLLabel* create();
+    static CCHTMLLabel* createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,EAlignment hAlignment,EAlignment vAlignment);
+    static CCHTMLLabel* createWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias, CCTextAlignment hAlignment,CCVerticalTextAlignment vAlignment);
+    bool initWithString(const char* utf8_str, const CCSize& preferred_size, const char* font_alias,EAlignment hAlignment,EAlignment vAlignment);
+    // from CCLabelProtocol
+    virtual void setString(const char *utf8_str);
+    virtual const char* getString();
+    // append string, faster if you only add additional string to tail
+    virtual void appendString(const char *utf8_str);
+    // from CCLayer
+    virtual void draw();
+    void registerLuaClickListener(int click_handle);
+    void registerLuaMovedListener(int moved_handle);
+    void removeLuaListener(int handle);
+
+    // utilities
+    // virtual void setPreferredSize(RSize v);
+    virtual void setPlainMode(bool v);
+    virtual void setDefaultFontAlias(const char* v);
+    virtual void setDefaultColor(unsigned int v);
+    virtual void setAlignment(EAlignment h,EAlignment v);
+    virtual void setHorizontalAligment(EAlignment h);
+    virtual void setVerticalAligment(EAlignment v);
+    virtual void setDefaultWrapline(bool v);
+    virtual void setDefaultSpacing(short v);
+    virtual void setDefaultPadding(short v);
+
+    // virtual RSize getPreferredSize();
+    virtual bool isPlainMode();
+    virtual const char* getDefaultFontAlias();
+    virtual unsigned int getDefaultColor();
+    virtual EAlignment getHorizontalAligment();
+    virtual EAlignment getVerticalAligment();
+    virtual bool isDefaultWrapline();
+    virtual short getDefaultSpacing();
+    virtual short getDefaultPadding();
+
+
+    CCHTMLLabel();
+    virtual ~CCHTMLLabel();
+};
